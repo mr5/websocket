@@ -1,4 +1,14 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WebSocketClient = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WebSocketClient = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+module.exports = function() {
+  throw new Error(
+    'ws does not work in the browser. Browser clients must use the native ' +
+      'WebSocket object'
+  );
+};
+
+},{}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29,7 +39,8 @@ var backoff = {
 };
 
 function createBackoff(type, options) {
-  return new Backoff(backoff[type], options);
+  var backoffFunc = typeof type === 'function' ? type : backoff[type];
+  return new Backoff(backoffFunc, options);
 }
 
 function Backoff(func, options) {
@@ -42,7 +53,7 @@ Backoff.prototype.backoff = function () {
   setTimeout(this.onReady, this.func(++this.attempts, this.delay));
 };
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54,6 +65,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var createBackoff = require('./backoff').createBackoff;
+
+var WebSocketImpl = typeof WebSocket !== "undefined" ? WebSocket : require('ws');
 
 var WebSocketClient = function () {
 
@@ -90,7 +103,7 @@ var WebSocketClient = function () {
       // keep binaryType used on previous WebSocket connection
       var binaryType = this.ws && this.ws.binaryType;
 
-      this.ws = new WebSocket(this.url, this.protocols);
+      this.ws = new WebSocketImpl(this.url, this.protocols);
       this.ws.onclose = this.onCloseCallback.bind(this);
       this.ws.onerror = this.onErrorCallback.bind(this);
       this.ws.onmessage = this.onMessageCallback.bind(this);
@@ -356,24 +369,24 @@ var WebSocketClient = function () {
  */
 
 
-WebSocketClient.CONNECTING = WebSocket.CONNECTING;
+WebSocketClient.CONNECTING = WebSocketImpl.CONNECTING;
 
 /**
  * The connection is open and ready to communicate.
  */
-WebSocketClient.OPEN = WebSocket.OPEN;
+WebSocketClient.OPEN = WebSocketImpl.OPEN;
 
 /**
  * The connection is in the process of closing.
  */
-WebSocketClient.CLOSING = WebSocket.CLOSING;
+WebSocketClient.CLOSING = WebSocketImpl.CLOSING;
 
 /**
  * The connection is closed or couldn't be opened.
  */
-WebSocketClient.CLOSED = WebSocket.CLOSED;
+WebSocketClient.CLOSED = WebSocketImpl.CLOSED;
 
 exports.default = WebSocketClient;
 
-},{"./backoff":1}]},{},[2])(2)
+},{"./backoff":2,"ws":1}]},{},[3])(3)
 });
