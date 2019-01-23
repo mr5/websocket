@@ -23,7 +23,8 @@ const backoff = {
 };
 
 export function createBackoff(type, options) {
-  return new Backoff(backoff[type], options);
+  const backoffFunc = typeof type === 'function' ? type : backoff[type];
+  return new Backoff(backoffFunc, options);
 }
 
 function Backoff (func, options) {
