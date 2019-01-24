@@ -214,6 +214,13 @@ var WebSocketClient = function () {
 
       this.ws.close(code, reason);
     }
+  }, {
+    key: 'refresh',
+    value: function refresh() {
+      if (this.ws) {
+        this.ws.close();
+      }
+    }
 
     /**
      * Transmits data to the server over the WebSocket connection.
