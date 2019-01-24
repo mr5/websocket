@@ -1,8 +1,8 @@
 var createBackoff = require('./backoff').createBackoff;
 
-var WebSocketImpl = (typeof(WebSocket) !== "undefined")
-  ? WebSocket
-  : require('ws');
+var WebSocketImpl = (typeof (WebSocket) !== "undefined")
+    ? WebSocket
+    : require('ws');
 
 class WebSocketClient {
 
@@ -10,7 +10,7 @@ class WebSocketClient {
    * @param url DOMString The URL to which to connect; this should be the URL to which the WebSocket server will respond.
    * @param protocols DOMString|DOMString[] Either a single protocol string or an array of protocol strings. These strings are used to indicate sub-protocols, so that a single server can implement multiple WebSocket sub-protocols (for example, you might want one server to be able to handle different types of interactions depending on the specified protocol). If you don't specify a protocol string, an empty string is assumed.
    */
-  constructor (url, protocols, options = {}) {
+  constructor(url, protocols, options = {}) {
     this.url = url;
     this.protocols = protocols;
 
@@ -20,12 +20,12 @@ class WebSocketClient {
     this.backoff = createBackoff(options.backoff || 'exponential', options);
     this.backoff.onReady = this.onBackoffReady.bind(this);
 
-    if (typeof(options.connect)==="undefined" || options.connect) {
+    if (typeof (options.connect) === "undefined" || options.connect) {
       this.open();
     }
   }
 
-  open (reconnect = false) {
+  open(reconnect = false) {
     this.isReconnect = reconnect;
 
     // keep binaryType used on previous WebSocket connection
@@ -45,7 +45,7 @@ class WebSocketClient {
   /**
    * @ignore
    */
-  onBackoffReady (number, delay) {
+  onBackoffReady(number, delay) {
     // console.log("onBackoffReady", number + ' ' + delay + 'ms');
     this.open(true);
   }
@@ -53,7 +53,7 @@ class WebSocketClient {
   /**
    * @ignore
    */
-  onCloseCallback (e) {
+  onCloseCallback(e) {
     if (!this.isReconnect && this.listeners['onclose']) {
       this.listeners['onclose'].apply(null, arguments);
     }
@@ -65,7 +65,7 @@ class WebSocketClient {
   /**
    * @ignore
    */
-  onErrorCallback () {
+  onErrorCallback() {
     if (this.listeners['onerror']) {
       this.listeners['onerror'].apply(null, arguments);
     }
@@ -74,7 +74,7 @@ class WebSocketClient {
   /**
    * @ignore
    */
-  onMessageCallback () {
+  onMessageCallback() {
     if (this.listeners['onmessage']) {
       this.listeners['onmessage'].apply(null, arguments);
     }
@@ -83,7 +83,7 @@ class WebSocketClient {
   /**
    * @ignore
    */
-  onOpenCallback () {
+  onOpenCallback() {
     if (this.listeners['onopen']) {
       this.listeners['onopen'].apply(null, arguments);
     }
@@ -104,14 +104,18 @@ class WebSocketClient {
    * @type unsigned long
    * @readonly
    */
-  get bufferedAmount () { return this.ws.bufferedAmount; }
+  get bufferedAmount() {
+    return this.ws.bufferedAmount;
+  }
 
   /**
    * The current state of the connection; this is one of the Ready state constants.
    * @type unsigned short
    * @readonly
    */
-  get readyState () { return this.ws.readyState; }
+  get readyState() {
+    return this.ws.readyState;
+  }
 
   /**
    * A string indicating the type of binary data being transmitted by the
@@ -119,16 +123,26 @@ class WebSocketClient {
    * used or "arraybuffer" if ArrayBuffer objects are being used.
    * @type DOMString
    */
-  get binaryType () { return this.ws.binaryType; }
-  set binaryType (binaryType) { this.ws.binaryType = binaryType; }
+  get binaryType() {
+    return this.ws.binaryType;
+  }
+
+  set binaryType(binaryType) {
+    this.ws.binaryType = binaryType;
+  }
 
   /**
    * The extensions selected by the server. This is currently only the empty
    * string or a list of extensions as negotiated by the connection.
    * @type DOMString
    */
-  get extensions () { return this.ws.extensions; }
-  set extensions (extensions) { this.ws.extensions = extensions; }
+  get extensions() {
+    return this.ws.extensions;
+  }
+
+  set extensions(extensions) {
+    this.ws.extensions = extensions;
+  }
 
   /**
    * A string indicating the name of the sub-protocol the server selected;
@@ -136,8 +150,13 @@ class WebSocketClient {
    * creating the WebSocket object.
    * @type DOMString
    */
-  get protocol () { return this.ws.protocol; }
-  set protocol (protocol) { this.ws.protocol = protocol; }
+  get protocol() {
+    return this.ws.protocol;
+  }
+
+  set protocol(protocol) {
+    this.ws.protocol = protocol;
+  }
 
   /**
    * Closes the WebSocket connection or connection attempt, if any. If the
@@ -148,12 +167,20 @@ class WebSocketClient {
    *
    * @return void
    */
-  close (code, reason) {
-    if (typeof code == 'undefined') { code = 1000; }
+  close(code, reason) {
+    if (typeof code == 'undefined') {
+      code = 1000;
+    }
 
     this.reconnectEnabled = false;
 
     this.ws.close(code, reason);
+  }
+
+  refresh() {
+    if (this.ws) {
+      this.ws.close();
+    }
   }
 
   /**
@@ -161,41 +188,68 @@ class WebSocketClient {
    * @param data DOMString|ArrayBuffer|Blob
    * @return void
    */
-  send (data) { this.ws.send(data); }
+  send(data) {
+    this.ws.send(data);
+  }
 
   /**
    * An event listener to be called when the WebSocket connection's readyState changes to CLOSED. The listener receives a CloseEvent named "close".
    * @param listener EventListener
    */
-  set onclose (listener) { this.listeners['onclose'] = listener; }
-  get onclose () { return this.listeners['onclose']; }
+  set onclose(listener) {
+    this.listeners['onclose'] = listener;
+  }
+
+  get onclose() {
+    return this.listeners['onclose'];
+  }
 
   /**
    * An event listener to be called when an error occurs. This is a simple event named "error".
    * @param listener EventListener
    */
-  set onerror (listener) { this.listeners['onerror'] = listener; }
-  get onerror () { return this.listeners['onerror']; }
+  set onerror(listener) {
+    this.listeners['onerror'] = listener;
+  }
+
+  get onerror() {
+    return this.listeners['onerror'];
+  }
 
   /**
    * An event listener to be called when a message is received from the server. The listener receives a MessageEvent named "message".
    * @param listener EventListener
    */
-  set onmessage (listener) { this.listeners['onmessage'] = listener; }
-  get onmessage () { return this.listeners['onmessage']; }
+  set onmessage(listener) {
+    this.listeners['onmessage'] = listener;
+  }
+
+  get onmessage() {
+    return this.listeners['onmessage'];
+  }
 
   /**
    * An event listener to be called when the WebSocket connection's readyState changes to OPEN; this indicates that the connection is ready to send and receive data. The event is a simple one with the name "open".
    * @param listener EventListener
    */
-  set onopen (listener) { this.listeners['onopen'] = listener; }
-  get onopen () { return this.listeners['onopen']; }
+  set onopen(listener) {
+    this.listeners['onopen'] = listener;
+  }
+
+  get onopen() {
+    return this.listeners['onopen'];
+  }
 
   /**
    * @param listener EventListener
    */
-  set onreconnect (listener) { this.listeners['onreconnect'] = listener; }
-  get onreconnect () { return this.listeners['onreconnect']; }
+  set onreconnect(listener) {
+    this.listeners['onreconnect'] = listener;
+  }
+
+  get onreconnect() {
+    return this.listeners['onreconnect'];
+  }
 
 }
 
