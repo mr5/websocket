@@ -7,7 +7,7 @@ declare module "@gamestdio/websocket" {
     }
 
     class WebSocketClient extends WebSocket {
-        constructor (url: string, protocols?: string[], options?: WebSocketConnectionOptions);
+        constructor(url: string, protocols?: string[], options?: WebSocketConnectionOptions);
 
         // properties
         url: string;
@@ -16,18 +16,25 @@ declare module "@gamestdio/websocket" {
 
         ws: WebSocket;
         binaryType: BinaryType;
-        listeners: {[id: string]: Function};
+        listeners: { [id: string]: Function };
 
         // methods
         send(data: any): void;
+
         open(reconnect?: boolean): void;
+
+        refresh(): void;
 
         //callbacks
         onreconnect: (this: WebSocketClient, ev: Event) => any;
-        onCloseCallback (event?: Event): void;
-        onErrorCallback (event?: Event): void;
-        onMessageCallback (event?: Event): void;
-        onOpenCallback (event?: Event): void;
+
+        onCloseCallback(event?: Event): void;
+
+        onErrorCallback(event?: Event): void;
+
+        onMessageCallback(event?: Event): void;
+
+        onOpenCallback(event?: Event): void;
     }
 
     export default WebSocketClient;
